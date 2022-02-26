@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Alumno } from './alumno';
 import { AlumnoService } from './alumno.service';
+import swal from 'sweetalert2'
 
 @Component({
   selector: 'app-form',
@@ -9,18 +10,42 @@ import { AlumnoService } from './alumno.service';
   styleUrls: ['./form.component.css']
 })
 export class FormComponent implements OnInit {
-  public alumno:Alumno = new Alumno();
-  public titulo:string = "Crear Alumno";
+  public alumno: Alumno = new Alumno();
+  public titulo: string = "Crear Alumno";
 
-  constructor(private alumnoService: AlumnoService, private router: Router) { }
+  constructor(private alumnoService: AlumnoService, private router: Router, private activatedRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
+    this.cargarCliente();
   }
 
-  public create(): void{
-    this.alumnoService.create(this.alumno).subscribe(
-      response => this.router.navigate(['/alumnos'])
-    )
+  cargarCliente(): void {
+    this.activatedRoute.params.subscribe(params => {
+      let id = params['id']
+      if (id) {
+        this.alumnoService.getAlumno(id).subscribe((alumno) => this.alumno = alumno)
+      }
+    })
   }
+
+  public create(): void {
+    this.alumnoService.create(this.alumno)
+      .subscribe(alumno => {
+        this.router.navigate(['/alumnos'])
+        swal.fire('Nuevo alumno', `Alumno ${alumno.nombre} creado con éxito!`, 'success')
+      }
+      )
+  }
+
+  update(): void {
+    this.alumnoService.update(this.alumno)
+      .subscribe(alumno => {
+        this.router.navigate(['/alumnos'])
+        swal.fire('Alumno actualizado', `Alumno actualizado con éxito!`, 'success')
+      }
+      )
+  }
+
+  
 
 }

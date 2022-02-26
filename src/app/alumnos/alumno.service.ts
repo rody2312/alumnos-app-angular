@@ -23,4 +23,16 @@ export class AlumnoService {
   create(alumno:Alumno): Observable<Alumno> {
     return this.http.post<Alumno>(this.urlEndPoint, alumno, {headers: this.httpHeaders})
   }
+
+  getAlumno(id): Observable<Alumno>{
+    return this.http.get<Alumno>(`${this.urlEndPoint}/${id}`)
+  }
+
+  update(alumno: Alumno): Observable<Alumno>{
+    return this.http.put<Alumno>(`${this.urlEndPoint}/${alumno.id}`, alumno, {headers: this.httpHeaders})
+  }
+
+  delete(id: number): Observable<Alumno>{
+    return this.http.delete<Alumno>(`${this.urlEndPoint}/${id}`, {headers: this.httpHeaders})
+  }
 }
